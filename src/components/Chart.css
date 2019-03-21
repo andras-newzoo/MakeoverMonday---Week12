@@ -3,3 +3,8 @@
 rect {
   cursor: pointer;
 }
+
+.guessText {
+  fill: #fff;
+  font-weight: 800;
+}

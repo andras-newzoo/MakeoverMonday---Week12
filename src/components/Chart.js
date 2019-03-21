@@ -7,6 +7,7 @@ import { select, event as currentEvent } from 'd3-selection'
 import { transition } from 'd3-transition'
 import { format } from 'd3-format'
 import { drag } from 'd3-drag'
+import { max } from 'd3-array'
 
 import { updateSvg, appendArea, createUpdateYAxis, createUpdateXAxis } from './chartFunctions'
 
@@ -24,10 +25,18 @@ class Chart extends Component {
   }
 
 
-  componentDidUpdate(){
+  componentDidUpdate(prevProps){
     const {countryGuess} = this.props
 
+
+    this.updateDragText()
+
     console.log(countryGuess)
+    // if(max(prevProps.countryGuess, d => d.index) !== max(countryGuess, d => d.index) ){
+    //   console.log('updating')
+    // }
+
+
   }
 
 
@@ -58,8 +67,8 @@ class Chart extends Component {
     createUpdateYAxis( this.yAxis, this.yAxisCall)
     createUpdateXAxis( this.xAxis, this.xAxisCall )
 
-    const dragRects = this.chartArea.selectAll('.dragrect').data(data)
-          //guessText = this.chartArea.selectAll('.guessText').data(countryGuess)
+    const dragRects = this.chartArea.selectAll('.dragrect').data(data),
+          guessText = this.chartArea.selectAll('.guessText').data(countryGuess)
 
 
     dragRects.enter()
@@ -79,10 +88,31 @@ class Chart extends Component {
                 .attr('y', d => this.yScale(50))
                 .attr('height', 15)
 
+    guessText.enter()
+            .append('text')
+            .attr('class', 'guessText')
+            .attr('x', d => this.xScale(d.country) + this.xScale.bandwidth()/2)
+            .attr('y', this.yScale(0))
+            .attr('dy', 12.5)
+            .attr('text-anchor', 'middle')
+            .text(d => format('d')(this.textScale(d.index)))
+                  .merge(dragRects)
+                  .transition('dragtexts-in')
+                  .duration(long)
+                  .delay((d,i) => 500 + i * delayShort)
+                  .attr('y', this.yScale(50))
 
-    console.log(Object.values(countryGuess))
-    console.log(Object.keys(countryGuess))
-    //console.log(this.yScale.domain(), chartWidth)
+
+  }
+
+  updateDragText(){
+
+    const { countryGuess } = this.props,
+          guessText = this.chartArea.selectAll('.guessText').data(countryGuess)
+
+    guessText.text(d => format('d')(this.textScale(d.index)))
+            .attr('y', d => this.yScale((this.textScale(d.index))))
+            // .attr('dy', 13)
 
   }
 
