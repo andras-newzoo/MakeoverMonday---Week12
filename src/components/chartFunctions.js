@@ -42,7 +42,8 @@ createUpdateXAxis = (
   axis, axisCall
 ) => {
 
-  axis.call(axisCall).selectAll('.tick line').remove()
+  axis.transition().duration(1500).call(axisCall)
+  axis.selectAll('.tick line').remove()
 
 },
 createUpdateYAxis = (

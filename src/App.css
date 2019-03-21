@@ -22,3 +22,12 @@ font-style: normal;
     zoom: 100%;
     color: #333;
 }
+
+.ui-button:first-of-type {
+  margin-left: 65px !important;
+}
+
+.ui-button {
+  margin-right: 53px !important;
+  padding: 10px !important;
+}

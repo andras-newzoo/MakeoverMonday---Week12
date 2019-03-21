@@ -4,7 +4,20 @@ rect {
   cursor: pointer;
 }
 
-.guessText {
-  fill: #fff;
-  font-weight: 800;
+text {
+  user-select: none;
+  pointer-events: none;
+}
+
+.guessText,
+.avg-text {
+  fill: #333;
+  font-size: 16px;
+}
+
+.country-x-axis text,
+.country-y-axis text,
+.g7-y-axis text,
+.g7-x-axis text{
+    font-size: 16px;
 }
