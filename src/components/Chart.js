@@ -4,21 +4,14 @@ import './Chart.css';
 import { scaleBand, scaleLinear } from 'd3-scale'
 import { axisBottom, axisLeft } from 'd3-axis'
 import { select, event as currentEvent } from 'd3-selection'
-import { transition } from 'd3-transition'
+import 'd3-transition'
 import { format } from 'd3-format'
-import { sum } from 'd3-array'
 import { drag } from 'd3-drag'
 import { interpolateNumber } from 'd3-interpolate'
 
 import { updateSvg, appendArea, createUpdateYAxis, createUpdateXAxis } from './chartFunctions'
 
 class Chart extends Component {
-  constructor(props){
-        super(props)
-        this.state = {
-          countryArray: []
-        }
-    }
 
   handleDrag = (d, i, n) => {
     this.props.handleDrag(d, i, n)
@@ -39,13 +32,7 @@ class Chart extends Component {
 
       this.updateDragText()
 
-      if(country !== prevProps.country){
-          this.showResults()
-      }
-
-      if (filter) {
-
-      }
+      this.showResults()
 
     //console.log(countryGuess)
 
@@ -163,23 +150,21 @@ class Chart extends Component {
 
   showResults(){
 
-    const { data, filter, country, transition } = this.props,
-          { countryArray } = this.state,
+    const { data, filter, transition } = this.props,
           resultRects = this.chartArea.selectAll('.resultRects').data(data),
-          resultText = this.chartArea.selectAll('.resultTexts').data(data),
-          copy = {...this.state}
+          resultText = this.chartArea.selectAll('.resultTexts').data(data)
 
-    if(!copy.countryArray.includes(country)){
       resultRects.transition('result-rects-in')
                   .duration(transition.veryLong)
-                  .attr('fill', d => d.result > d.guess ? 'green' : 'red')
+                  .attr('fill', '#8e9a9f')
                   .attr('height', d => filter.includes(d.country) ? this.yScale(0) - this.yScale(d.result) : 0)
                   .attr('y', d => filter.includes(d.country) ? this.yScale(d.result) : this.yScale(0) )
 
 
       resultText.transition('result-in')
                   .duration(transition.veryLong)
-                  .attr('fill', d => d.result > d.guess ? 'green' : 'red')
+                  .attr('fill', '#8e9a9f')
+                  .attr('font-weight', '800')
                   .attr('y', d => filter.includes(d.country) ? this.yScale(d.result) : this.yScale(0))
                   .attr('opacity',  d => filter.includes(d.country) ? 1 : 0)
                   .tween("text", function(d, index) {
@@ -187,16 +172,9 @@ class Chart extends Component {
                         const that = select(this),
                         i = interpolateNumber(that.text(), d.result);
                         return function(t) {that.text(format('d')(i(t))) };
+                        }})
 
-                }})}
-
-
-
-      if (!copy.countryArray.includes(country)){
-          copy.countryArray.push(country)}
-      this.setState(copy)
-
-  }
+}
 
   render() {
     return (

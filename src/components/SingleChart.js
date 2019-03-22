@@ -4,7 +4,7 @@ import './Chart.css';
 import { scaleBand, scaleLinear } from 'd3-scale'
 import { axisBottom } from 'd3-axis'
 import { select } from 'd3-selection'
-import { transition } from 'd3-transition'
+import 'd3-transition'
 import { format } from 'd3-format'
 import { interpolateNumber } from 'd3-interpolate'
 

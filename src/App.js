@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import { Button } from 'semantic-ui-react'
-
 import Chart from './components/Chart'
 import SingleChart from './components/SingleChart'
-import data from './data/data.json'
+import LifeChart from './components/LifeChart'
 
 import { select, event as currentEvent } from 'd3-selection'
 import { mean } from 'd3-array'
@@ -26,7 +24,7 @@ class App extends Component {
           ],
           average: [{country: 'G7 Avg.', index:280, result: 66}],
           filter: [],
-          country: ''
+          life: 100
         }
     }
 
@@ -50,24 +48,30 @@ class App extends Component {
   handleDblClick = (d, i, n) => {
     const copy = {...this.state}
 
-          if (!copy.filter.includes(d.country)){
+          if (!copy.filter.includes(d.country) && copy.life > 0){
               copy.filter.push(d.country)
+              copy.life = copy.life-d.difference
           }
 
-          copy.country = d.country
+          if(copy.life < 0){
+            copy.life = 0
+          }
+
+
 
           this.setState(copy)
-    // console.log(this.state)
+    //console.log(this.state)
 
   }
 
   render() {
 
-    const { countryGuess, average, filter, country } = this.state,
+    const { countryGuess, average, filter, country, life} = this.state,
           scale = scaleLinear().range([0, 100]).domain([560, 0])
 
     countryGuess.forEach( d => {
         d.difference = Math.abs(scale(d.index)- d.result)
+        d.differenceSimple = scale(d.index)- d.result
         d.guess = scale(d.index)
     })
 
@@ -76,6 +80,15 @@ class App extends Component {
 
     return (
       <div className="App">
+        <div className="header-section">
+          <div className="life-chart">
+            <LifeChart
+              data = {life}
+              width = {250}
+              height = {300}
+            />
+          </div>
+        </div>
         <div>
           <Chart
             data = {countryGuess}
