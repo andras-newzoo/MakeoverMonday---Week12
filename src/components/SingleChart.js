@@ -47,7 +47,7 @@ class SingleChart extends Component {
 
     const svg = select(this.node),
           { data, width, height, margin, transition} = this.props,
-          { long, delayLong } = transition,
+          { start, delayLong } = transition,
           { chartWidth, chartHeight } = updateSvg(svg, height, width, margin)
     //
     appendArea(svg, 'g7-chart-area', margin.left, margin.top)
@@ -101,13 +101,16 @@ class SingleChart extends Component {
             .attr('dy', -7.5)
             .attr('width', this.xScale.bandwidth())
             .attr('height', 5)
+            .attr('stroke', '#333')
+            .attr('stroke-width', 20)
+            .attr('stroke-opacity', 0)
             .attr('rx', 5)
             .attr('opacity', 0)
             .attr('fill', '#333')
             .on('dblclick', this.handleDblClick)
                 .merge(rect)
                 .transition('avgrect-in')
-                .duration(long)
+                .duration(start)
                 .delay(delayLong)
                 .attr('y', d => this.yScale(50))
                 .attr('opacity', 1)
@@ -122,7 +125,7 @@ class SingleChart extends Component {
             .text(0)
             .attr('text-anchor', 'middle')
                   .transition('avgtext-in')
-                  .duration(long)
+                  .duration(start)
                   .delay(delayLong)
                   .attr('opacity', 1)
                   .attr('fill', '#333')
@@ -187,12 +190,12 @@ class SingleChart extends Component {
 SingleChart.defaultProps = {
   margin: {
   top: 10,
-  right: 12,
+  right: 20,
   bottom: 30,
-  left: 12
+  left: 25
 },
 transition: {
-  long: 3000,
+  long: 2000,
   start: 3000,
   delayShort: 2000,
   delayLong: 3000

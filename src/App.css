@@ -19,8 +19,12 @@ font-style: normal;
 
 * {
     font-family: futura-pt, sans-serif ;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     zoom: 100%;
     color: #333;
+    user-select: none;
 }
 
 .ui-button:first-of-type {
@@ -30,4 +34,74 @@ font-style: normal;
 .ui-button {
   margin-right: 53px !important;
   padding: 10px !important;
+}
+
+.App {
+  position: relative;
+  width: 1300px;
+  height: 700px;
+  margin: 5vh auto 0 auto;
+}
+
+.header-section {
+  position: absolute;
+  width: 100%;
+  height: 30%;
+  top: 0;
+  left: 0;
+}
+
+h1 {
+  font-size: 32px;
+
+}
+
+.text-section {
+  position: absolute;
+  width: 47%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.image-section {
+  position: absolute;
+  width: 20%;
+  height: 100%;
+  top: 5%;
+  left: 50%;
+}
+
+.life-chart {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+#how-to {
+  z-index: 99;
+  position: absolute;
+  top: 3%;
+  right: 0;
+}
+
+.chart-section {
+  position: absolute;
+  width: 100%;
+  height: 65%;
+  top: 30%;
+  left: 0;
+}
+
+.credit-section {
+  position: absolute;
+  width: 100%;
+  height: 5%;
+  top: 95%;
+  left: 0;
+  text-align: center;
+}
+
+.credit-section::before {
+  color: #333;
 }

@@ -28,8 +28,6 @@ class Chart extends Component {
 
   componentDidUpdate(prevProps){
 
-      const { filter, country } = this.props
-
       this.updateDragText()
 
       this.showResults()
@@ -58,7 +56,6 @@ class Chart extends Component {
     this.yAxis = select('.country-y-axis')
     this.yScale = scaleLinear().range([chartHeight, 0]).domain([0, 100])
     this.yAxisCall = axisLeft(this.yScale).tickSizeOuter(0).tickSizeInner(5).tickFormat(format('d')).ticks(chartHeight/100)
-
 
     this.xAxis = select('.country-x-axis')
     this.xScale = scaleBand().range([0, chartWidth]).domain(data.map(d => d.country)).padding(.15)
@@ -96,7 +93,7 @@ class Chart extends Component {
             .attr('x', d => this.xScale(d.country))
             .attr('y', d => this.yScale(0))
             .attr('dy', -7.5)
-            .attr('rx', 5)
+            .attr('rx', 3)
             .attr('stroke', '#333')
             .attr('stroke-width', 20)
             .attr('stroke-opacity', 0)
@@ -118,7 +115,7 @@ class Chart extends Component {
             .attr('class', 'guessText')
             .attr('x', d => this.xScale(d.country) + this.xScale.bandwidth()/2)
             .attr('y', this.yScale(0))
-            .attr('dy', -1)
+            .attr('dy', -2)
             .attr('opacity', 0)
             .attr('text-anchor', 'middle')
                   .merge(dragRects)
@@ -144,9 +141,7 @@ class Chart extends Component {
 
     guessText.text(d => format('d')(d.guess))
             .attr('y', d => this.yScale(d.guess))
-            .attr('dy', d => d.guess <= 50 ? -1 : 17)
-
-
+            .attr('dy', d => d.guess <= 50 ? -2 : 17)
 
   }
 

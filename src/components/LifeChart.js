@@ -34,7 +34,7 @@ class LifeChart extends Component {
 
     const svg = select(this.node),
           { data, width, height, margin, transition} = this.props,
-          { start, delayLong } = transition,
+          { start, delayShort } = transition,
           { chartWidth, chartHeight } = updateSvg(svg, height, width, margin)
     this.chartWidth = chartWidth
     this.chartHeight = chartHeight
@@ -53,7 +53,7 @@ class LifeChart extends Component {
     this.chartArea.append('rect')
             .attr('class', `stroke-rect`)
             .attr('x', this.xScale(0))
-            .attr('y', chartHeight - 10)
+            .attr('y', chartHeight - 90)
             .attr('height', 10)
             .attr('rx', 8)
             .attr('opacity', 1)
@@ -64,7 +64,7 @@ class LifeChart extends Component {
     this.chartArea.append('rect')
             .attr('class', `life-rect`)
             .attr('x', this.xScale(0))
-            .attr('y', chartHeight - 10)
+            .attr('y', chartHeight - 90)
             .attr('width', this.xScale(0))
             .attr('height', 10)
             .attr('rx', 8)
@@ -72,7 +72,7 @@ class LifeChart extends Component {
             .attr('fill', '#a43931')
                 .transition('life-in')
                 .duration(start)
-                .delay(delayLong)
+                .delay(delayShort)
                 .attr('width', this.xScale(data))
                 .attr('opacity', 1)
                 .attr('fill', this.colorScale(data))
@@ -82,7 +82,7 @@ class LifeChart extends Component {
             .append('text')
             .attr('class', 'life-text')
             .attr('x', chartWidth/2)
-            .attr('y', chartHeight - 15)
+            .attr('y', chartHeight - 100)
             .attr('font-weight', '800')
             .attr('font-size', '32px')
             .attr('text-anchor', 'middle')
@@ -90,7 +90,7 @@ class LifeChart extends Component {
             .attr('fill', '#a43931')
                   .transition('avgtext-in')
                   .duration(start)
-                  .delay(delayLong)
+                  .delay(delayShort)
                   .attr('fill', this.colorScale(data))
                   .tween("text", function(d, index) {
                         const that = select(this),
@@ -102,16 +102,15 @@ class LifeChart extends Component {
 
   updateVis(){
 
-    const { data, difference, transition } = this.props
-
-    console.log(difference)
+    const { data, difference, transition } = this.props,
+          {delayLong, long} = transition
 
 
     this.chartArea
             .append('text')
             .attr('class', 'diff-text')
-            .attr('x', this.chartWidth/1.5)
-            .attr('y', this.chartHeight - 35)
+            .attr('x', this.chartWidth/1.6)
+            .attr('y', 65)
             .attr('font-weight', '800')
             .attr('font-size', '32px')
             .attr('text-anchor', 'middle')
@@ -119,27 +118,29 @@ class LifeChart extends Component {
             .attr('opacity', 0)
             .text(format('d')(difference))
               .transition('diff-text-add')
-              .duration(transition.long)
+              .duration(long)
+              .delay(delayLong)
               .attr('opacity', 1)
 
     this.chartArea.selectAll('.life-rect')
               .transition('life-update')
               .duration(2000)
-              .delay(0)
+              .delay(delayLong)
               .attr('width', this.xScale(data))
               .attr('fill', this.colorScale(data))
 
     this.chartArea.selectAll('.life-text')
             .transition('life-text-update')
             .duration(2000)
-            .delay(0)
+            .delay(delayLong)
             .attr('fill', this.colorScale(data))
             .tween("text", function(d, index) {
                   const that = select(this),
                   i = interpolateNumber(that.text(), data);
                   return function(t) {that.text(format('d')(i(t))) };
                   })
-    select('.diff-text').transition('diff-text-remove').duration(transition.long).delay(transition.long).attr('opacity', 0).remove()
+
+    select('.diff-text').transition('diff-text-remove').duration(long).delay(long + delayLong).attr('opacity', 0).remove()
 
   }
 
@@ -159,8 +160,8 @@ LifeChart.defaultProps = {
 },
 transition: {
   long: 1000,
-  start: 3000,
-  delayShort: 2000,
+  start: 5000,
+  delayShort: 500,
   delayLong: 3000,
   verylong: 6000
 }
