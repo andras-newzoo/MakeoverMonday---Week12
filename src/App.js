@@ -25,7 +25,8 @@ class App extends Component {
             {country: 'United States', index: 280, result: 70}
           ],
           average: [{country: 'G7 Avg.', index:280, result: 66}],
-          filter: []
+          filter: [],
+          country: ''
         }
     }
 
@@ -45,17 +46,16 @@ class App extends Component {
             //console.log(this.state)
   }
 
-  handleGuessSortClick = () => {
-      const copy = {...this.state}
-            copy.sort = 'by guess'
-            this.setState(copy)
 
-            console.log(this.state)
-  }
-
-  handleButtonClick = (e) => {
+  handleDblClick = (d, i, n) => {
     const copy = {...this.state}
-          copy.filter.push(e.target.value)
+
+          if (!copy.filter.includes(d.country)){
+              copy.filter.push(d.country)
+          }
+
+          copy.country = d.country
+
           this.setState(copy)
     // console.log(this.state)
 
@@ -63,7 +63,7 @@ class App extends Component {
 
   render() {
 
-    const { countryGuess, average, filter } = this.state,
+    const { countryGuess, average, filter, country } = this.state,
           scale = scaleLinear().range([0, 100]).domain([560, 0])
 
     countryGuess.forEach( d => {
@@ -82,7 +82,9 @@ class App extends Component {
             width = {1000}
             height = {600}
             handleDrag = {this.handleDrag}
+            handleDblClick = {this.handleDblClick}
             filter = {filter}
+            country = {country}
           />
           <SingleChart
             data = {average}
@@ -91,13 +93,7 @@ class App extends Component {
           />
         </div>
       <div>
-        <Button className="ui-button" content='Show me!' value="Canada" onClick={this.handleButtonClick}/>
-        <Button className="ui-button" content='Show me!' value="France" onClick={this.handleButtonClick}/>
-        <Button className="ui-button" content='Show me!' value="Germany" onClick={this.handleButtonClick}/>
-        <Button className="ui-button" content='Show me!' value="Italy" onClick={this.handleButtonClick}/>
-        <Button className="ui-button" content='Show me!' value="Japan" onClick={this.handleButtonClick}/>
-        <Button className="ui-button" content='Show me!' value="United Kingdom" onClick={this.handleButtonClick}/>
-        <Button className="ui-button" content='Show me!' value="United States" onClick={this.handleButtonClick}/>
+
       </div>
       </div>
     );
