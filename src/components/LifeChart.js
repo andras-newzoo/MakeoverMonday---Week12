@@ -22,7 +22,10 @@ class LifeChart extends Component {
 
   componentDidUpdate(prevProps){
 
-    this.updateVis()
+    if(this.props.country !== prevProps.country){
+        this.updateVis()
+    }
+
 
   }
 
@@ -31,8 +34,10 @@ class LifeChart extends Component {
 
     const svg = select(this.node),
           { data, width, height, margin, transition} = this.props,
-          { long, delayLong } = transition,
+          { start, delayLong } = transition,
           { chartWidth, chartHeight } = updateSvg(svg, height, width, margin)
+    this.chartWidth = chartWidth
+    this.chartHeight = chartHeight
     //
     appendArea(svg, 'life-chart-area', margin.left, margin.top)
 
@@ -41,9 +46,6 @@ class LifeChart extends Component {
     this.xScale = scaleLinear().range([0, chartWidth]).domain([0,100])
     this.colorScale = chroma.scale(['#1d4350' ,'#556c75' ,'#8d989d' ,'#c6c6c6' ,'#c29891' ,'#b66a5f' ,'#a43931']).domain([100, 0])
 
-    //
-    const rect = this.chartArea.selectAll('.life-rect'),
-          text = this.chartArea.selectAll('.life-text')
 
     //
     //
@@ -69,8 +71,8 @@ class LifeChart extends Component {
             .attr('opacity', 0)
             .attr('fill', '#a43931')
                 .transition('life-in')
-                .duration(3000)
-                .delay(0)
+                .duration(start)
+                .delay(delayLong)
                 .attr('width', this.xScale(data))
                 .attr('opacity', 1)
                 .attr('fill', this.colorScale(data))
@@ -82,12 +84,14 @@ class LifeChart extends Component {
             .attr('x', chartWidth/2)
             .attr('y', chartHeight - 15)
             .attr('font-weight', '800')
+            .attr('font-size', '32px')
             .attr('text-anchor', 'middle')
-            .attr('fill', this.colorScale(data))
-                  .merge(text)
+            .text(0)
+            .attr('fill', '#a43931')
                   .transition('avgtext-in')
-                  .duration(3000)
-                  .delay(0)
+                  .duration(start)
+                  .delay(delayLong)
+                  .attr('fill', this.colorScale(data))
                   .tween("text", function(d, index) {
                         const that = select(this),
                         i = interpolateNumber(0, data);
@@ -98,10 +102,27 @@ class LifeChart extends Component {
 
   updateVis(){
 
-    const { data } = this.props,
-          text = this.chartArea.selectAll('.life-text').data(data)
+    const { data, difference, transition } = this.props
 
-     this.chartArea.selectAll('.life-rect')
+    console.log(difference)
+
+
+    this.chartArea
+            .append('text')
+            .attr('class', 'diff-text')
+            .attr('x', this.chartWidth/1.5)
+            .attr('y', this.chartHeight - 35)
+            .attr('font-weight', '800')
+            .attr('font-size', '32px')
+            .attr('text-anchor', 'middle')
+            .attr('fill', '#a43931')
+            .attr('opacity', 0)
+            .text(format('d')(difference))
+              .transition('diff-text-add')
+              .duration(transition.long)
+              .attr('opacity', 1)
+
+    this.chartArea.selectAll('.life-rect')
               .transition('life-update')
               .duration(2000)
               .delay(0)
@@ -118,6 +139,7 @@ class LifeChart extends Component {
                   i = interpolateNumber(that.text(), data);
                   return function(t) {that.text(format('d')(i(t))) };
                   })
+    select('.diff-text').transition('diff-text-remove').duration(transition.long).delay(transition.long).attr('opacity', 0).remove()
 
   }
 
@@ -139,7 +161,8 @@ transition: {
   long: 1000,
   start: 3000,
   delayShort: 2000,
-  delayLong: 3000
+  delayLong: 3000,
+  verylong: 6000
 }
 }
 

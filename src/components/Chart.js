@@ -3,7 +3,7 @@ import './Chart.css';
 
 import { scaleBand, scaleLinear } from 'd3-scale'
 import { axisBottom, axisLeft } from 'd3-axis'
-import { select, event as currentEvent } from 'd3-selection'
+import { select } from 'd3-selection'
 import 'd3-transition'
 import { format } from 'd3-format'
 import { drag } from 'd3-drag'
@@ -34,6 +34,7 @@ class Chart extends Component {
 
       this.showResults()
 
+
     //console.log(countryGuess)
 
   }
@@ -46,7 +47,7 @@ class Chart extends Component {
           { long, delayShort } = transition,
           { chartWidth, chartHeight } = updateSvg(svg, height, width, margin)
 
-          console.log(chartHeight)
+    //console.log(chartHeight)
 
     appendArea(svg, 'country-chart-area', margin.left, margin.top)
     appendArea(svg, 'country-y-axis', margin.left, margin.top)
@@ -78,7 +79,6 @@ class Chart extends Component {
             .attr('y', this.yScale(0))
             .attr('width', this.xScale.bandwidth()/1.5)
             .attr('height', 0)
-            .attr('fill', '#333')
 
     resultText.enter()
             .append('text')
@@ -89,7 +89,6 @@ class Chart extends Component {
             .attr('text-anchor', 'middle')
             .attr('opacity', '0')
             .text(0)
-
 
     dragRects.enter()
             .append('rect')
@@ -120,11 +119,14 @@ class Chart extends Component {
             .attr('x', d => this.xScale(d.country) + this.xScale.bandwidth()/2)
             .attr('y', this.yScale(0))
             .attr('dy', -1)
+            .attr('opacity', 0)
             .attr('text-anchor', 'middle')
                   .merge(dragRects)
                   .transition('dragtexts-in')
                   .duration(long)
                   .delay((d,i) => 500 + i * delayShort)
+                  .attr('opacity', 1)
+                  .attr('fill', '#333')
                   .attr('y', this.yScale(50))
                   .tween("text", function(d, index) {
                         const that = select(this),
@@ -150,9 +152,11 @@ class Chart extends Component {
 
   showResults(){
 
-    const { data, filter, transition } = this.props,
+    const { data, filter, transition, difference } = this.props,
           resultRects = this.chartArea.selectAll('.resultRects').data(data),
           resultText = this.chartArea.selectAll('.resultTexts').data(data)
+
+
 
       resultRects.transition('result-rects-in')
                   .duration(transition.veryLong)

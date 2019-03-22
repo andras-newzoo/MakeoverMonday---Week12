@@ -2,6 +2,12 @@
 * {
   font-size: 16px;
 }
+
+.life-text,
+.diff-text{
+  font-size: 32px;
+}
+
 rect {
   cursor: pointer;
 }

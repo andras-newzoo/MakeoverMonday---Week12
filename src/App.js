@@ -24,22 +24,27 @@ class App extends Component {
           ],
           average: [{country: 'G7 Avg.', index:280, result: 66}],
           filter: [],
-          life: 100
+          life: 100,
+          difference: 0,
+          country: ''
         }
     }
 
 
   handleDrag = (d, i, n) => {
+      if(this.state.life > 0){
       select(n[i]).attr("y", currentEvent.y > -1  && currentEvent.y < 560 ?  d.y = currentEvent.y : d.y = d.y);
       let country = d.country,
             copy = {...this.state},
             object = copy.countryGuess[i]
 
-            copy.average[0].index = mean(copy.countryGuess, d => d.index)
+            if(copy.life > 0){
+              copy.average[0].index = mean(copy.countryGuess, d => d.index)
+              object.country === country ? object.index = d.y : object.index = object.index
+            }
 
-            object.country === country ? object.index = d.y : object.index = object.index
 
-            this.setState(copy)
+            this.setState(copy)}
 
             //console.log(this.state)
   }
@@ -50,32 +55,70 @@ class App extends Component {
 
           if (!copy.filter.includes(d.country) && copy.life > 0){
               copy.filter.push(d.country)
-              copy.life = copy.life-d.difference
+              copy.life = copy.life - d.difference
+              copy.difference = -d.difference
+              copy.country = d.country
+          }
+
+          if (copy.filter.length === 7){
+            copy.life = copy.life-mean(this.state.countryGuess, d => d.difference)
+            copy.difference = -d.difference
+            copy.country = d.country
           }
 
           if(copy.life < 0){
             copy.life = 0
+            copy.difference = -d.difference
           }
 
 
 
           this.setState(copy)
-    //console.log(this.state)
+
+  }
+
+  handleDblClickAvg = (d, i, n) => {
+
+    if(this.state.life > 0){
+    const copy = {...this.state},
+
+          countries = copy.countryGuess.map(d => d.country)
+
+          copy.filter = ''
+          copy.filter = countries
+
+          if(copy.life < 0){
+            copy.life = 0
+          } else {
+              copy.life = copy.life- (d.difference * 7 + d.difference)
+              copy.country = d.country
+              copy.difference = -(d.difference * 7 + d.difference)
+              copy.life < 0 ? copy.life = 0 : copy.life = copy.life
+          }
+
+          this.setState(copy)}
+
+          //console.log(this.state)
 
   }
 
   render() {
 
-    const { countryGuess, average, filter, country, life} = this.state,
+    const { countryGuess, average, filter, life, difference, country} = this.state,
           scale = scaleLinear().range([0, 100]).domain([560, 0])
 
     countryGuess.forEach( d => {
         d.difference = Math.abs(scale(d.index)- d.result)
-        d.differenceSimple = scale(d.index)- d.result
+        d.differenceSimple = scale(d.index)- d.resul
+        d.guess = scale(d.index)
+    })
+    average.forEach( d => {
+        d.difference = Math.abs(scale(d.index)- d.result)
+        d.differenceSimple = scale(d.index)- d.resul
         d.guess = scale(d.index)
     })
 
-    //console.log(countryGuess)
+    //console.log(filter)
     //console.log(sort)
 
     return (
@@ -84,25 +127,28 @@ class App extends Component {
           <div className="life-chart">
             <LifeChart
               data = {life}
-              width = {250}
+              width = {350}
               height = {300}
+              difference = {difference}
+              country = {country}
             />
           </div>
         </div>
         <div>
           <Chart
             data = {countryGuess}
-            width = {1000}
+            width = {1200}
             height = {600}
             handleDrag = {this.handleDrag}
             handleDblClick = {this.handleDblClick}
             filter = {filter}
-            country = {country}
           />
           <SingleChart
             data = {average}
-            width = {150}
+            width = {180}
             height = {600}
+            filter = {filter}
+            handleDblClick = {this.handleDblClickAvg}
           />
         </div>
       <div>

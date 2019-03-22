@@ -12,9 +12,11 @@ import { updateSvg, appendArea, createUpdateXAxis } from './chartFunctions'
 
 class SingleChart extends Component {
 
-  handleDrag = (d, i, n) => {
-    this.props.handleDrag(d, i, n)
+
+  handleDblClick = (d, i, n) => {
+    this.props.handleDblClick(d, i, n)
   }
+
 
   componentDidMount(){
     //console.log(data)
@@ -24,7 +26,13 @@ class SingleChart extends Component {
 
   componentDidUpdate(prevProps){
 
+    const {filter} = this.props
+
     this.updateDragText()
+
+    if(filter.length === 7){
+      this.finishAvg()
+    }
 
     //console.log(average)
     // if(max(prevProps.countryGuess, d => d.index) !== max(countryGuess, d => d.index) ){
@@ -62,13 +70,28 @@ class SingleChart extends Component {
     //
     const rect = this.chartArea.selectAll('.avg-rect').data(data),
           text = this.chartArea.selectAll('.avg-text').data(data),
-          resultRect = this.chartArea.selectAll('.result-rect').data(data)
+          resultRect = this.chartArea.selectAll('.avg-result-rect').data(data),
+          resultText = this.chartArea.selectAll('.avg-result-text').data(data)
 
     resultRect.enter()
           .append('rect')
+          .attr('class', 'avg-result-rect')
+          .attr('x', d => this.xScale(d.country) + (this.xScale.bandwidth()/1.5)*.25)
+          .attr('y', this.yScale(0))
+          .attr('width', this.xScale.bandwidth()/1.5)
+          .attr('height', 0)
+          .attr('fill', 'none')
 
+    resultText.enter()
+            .append('text')
+            .attr('class', 'avg-result-text')
+            .attr('x', d => this.xScale(d.country) + this.xScale.bandwidth()/2)
+            .attr('y', this.yScale(0))
+            .attr('dy', -2)
+            .attr('text-anchor', 'middle')
+            .attr('opacity', '0')
+            .text(0)
 
-    //
     //
     rect.enter()
             .append('rect')
@@ -81,6 +104,7 @@ class SingleChart extends Component {
             .attr('rx', 5)
             .attr('opacity', 0)
             .attr('fill', '#333')
+            .on('dblclick', this.handleDblClick)
                 .merge(rect)
                 .transition('avgrect-in')
                 .duration(long)
@@ -94,11 +118,14 @@ class SingleChart extends Component {
             .attr('x', chartWidth/2)
             .attr('y', this.yScale(0))
             .attr('dy', -1)
+            .attr('opacity', 0)
+            .text(0)
             .attr('text-anchor', 'middle')
-                  .merge(text)
                   .transition('avgtext-in')
                   .duration(long)
                   .delay(delayLong)
+                  .attr('opacity', 1)
+                  .attr('fill', '#333')
                   .attr('y', this.yScale(50))
                   .tween("text", function(d, index) {
                         const that = select(this),
@@ -119,6 +146,34 @@ class SingleChart extends Component {
             .attr('dy', d => (this.textScale(d.index)) <= 50 ? -1 : 17)
 
     rect.attr('y', d => this.yScale((this.textScale(d.index))))
+
+  }
+
+  finishAvg(){
+
+    const { data, transition } = this.props,
+          resultRect = this.chartArea.selectAll('.avg-result-rect').data(data),
+          resultText = this.chartArea.selectAll('.avg-result-text').data(data)
+
+
+      resultRect.transition('avg-result-rects-in')
+                  .duration(transition.long)
+                  .attr('fill', '#717b7f')
+                  .attr('height', d => this.yScale(0) - this.yScale(d.result))
+                  .attr('y', d => this.yScale(d.result))
+
+
+      resultText.transition('avg-result-in')
+                  .duration(transition.long)
+                  .attr('fill', '#717b7f')
+                  .attr('font-weight', '800')
+                  .attr('y', d => this.yScale(d.result))
+                  .attr('opacity',  d =>  1 )
+                  .tween("text", function(d, index) {
+                        const that = select(this),
+                        i = interpolateNumber(that.text(), d.result);
+                        return function(t) {that.text(format('d')(i(t))) };
+                        })
 
   }
 
