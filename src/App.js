@@ -124,9 +124,6 @@ class App extends Component {
         d.guess = scale(d.index)
     })
 
-    //console.log(filter)
-    //console.log(sort)
-
     return (
       <div className="App">
         <div className="header-section">
@@ -149,7 +146,7 @@ class App extends Component {
             <div id='how-to'>
               <Popup trigger={<Button icon='question circle' />} content="
                   Set your assumptions with the horizontal bars for each country, and double click them to show the results. Be careful, because the further away your assumption is from the result, the more 'life points' you will lose.
-                  In case you run out of them, the game ends and you will not be able to see the unvieled results. The average bar is calculated across your assumptions for the seven countries. You can show the result for
+                  In case you run out of them, the game ends and you will not be able to see the unveiled results. The average bar is calculated across your assumptions for the seven countries. You can show the result for
                    all countries by double clicking the bar for G7 Average!" />
             </div>
           </div>

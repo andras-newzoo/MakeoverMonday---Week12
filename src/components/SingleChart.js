@@ -161,14 +161,14 @@ class SingleChart extends Component {
 
       resultRect.transition('avg-result-rects-in')
                   .duration(transition.long)
-                  .attr('fill', '#717b7f')
+                  .attr('fill', '#484f51')
                   .attr('height', d => this.yScale(0) - this.yScale(d.result))
                   .attr('y', d => this.yScale(d.result))
 
 
       resultText.transition('avg-result-in')
                   .duration(transition.long)
-                  .attr('fill', '#717b7f')
+                  .attr('fill', '#484f51')
                   .attr('font-weight', '800')
                   .attr('y', d => this.yScale(d.result))
                   .attr('opacity',  d =>  1 )
@@ -192,7 +192,7 @@ SingleChart.defaultProps = {
   top: 10,
   right: 20,
   bottom: 30,
-  left: 25
+  left: 35
 },
 transition: {
   long: 2000,
