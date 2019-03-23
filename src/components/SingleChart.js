@@ -87,7 +87,7 @@ class SingleChart extends Component {
             .attr('class', 'avg-result-text')
             .attr('x', d => this.xScale(d.country) + this.xScale.bandwidth()/2)
             .attr('y', this.yScale(0))
-            .attr('dy', -2)
+            .attr('dy', -4)
             .attr('text-anchor', 'middle')
             .attr('opacity', '0')
             .text(0)
@@ -120,7 +120,7 @@ class SingleChart extends Component {
             .attr('class', 'avg-text')
             .attr('x', chartWidth/2)
             .attr('y', this.yScale(0))
-            .attr('dy', -1)
+            .attr('dy', -4)
             .attr('opacity', 0)
             .text(0)
             .attr('text-anchor', 'middle')
@@ -146,7 +146,7 @@ class SingleChart extends Component {
 
     text.text(d => format('d')(this.textScale(d.index)))
             .attr('y', d => this.yScale((this.textScale(d.index))))
-            .attr('dy', d => (this.textScale(d.index)) <= 50 ? -1 : 17)
+            .attr('dy', d => (this.textScale(d.index)) <= 50 ? -5 : 19)
 
     rect.attr('y', d => this.yScale((this.textScale(d.index))))
 

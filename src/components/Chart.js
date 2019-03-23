@@ -82,7 +82,7 @@ class Chart extends Component {
             .attr('class', 'resultTexts')
             .attr('x', d => this.xScale(d.country) + this.xScale.bandwidth()/2)
             .attr('y', this.yScale(0))
-            .attr('dy', -2)
+            .attr('dy', -4)
             .attr('text-anchor', 'middle')
             .attr('opacity', '0')
             .text(0)
@@ -115,7 +115,7 @@ class Chart extends Component {
             .attr('class', 'guessText')
             .attr('x', d => this.xScale(d.country) + this.xScale.bandwidth()/2)
             .attr('y', this.yScale(0))
-            .attr('dy', -2)
+            .attr('dy', -4)
             .attr('opacity', 0)
             .attr('text-anchor', 'middle')
                   .merge(dragRects)
@@ -128,8 +128,7 @@ class Chart extends Component {
                   .tween("text", function(d, index) {
                         const that = select(this),
                         i = interpolateNumber(0, 50);
-                        return function(t) {that.text(format('d')(i(t))) };
-                      })
+                        return function(t) {that.text(format('d')(i(t)))}})
 
   }
 
@@ -141,16 +140,15 @@ class Chart extends Component {
 
     guessText.text(d => format('d')(d.guess))
             .attr('y', d => this.yScale(d.guess))
-            .attr('dy', d => d.guess <= 50 ? -2 : 17)
+            .attr('dy', d => d.guess <= 50 ? -5 : 19)
 
   }
 
   showResults(){
 
-    const { data, filter, transition, difference } = this.props,
+    const { data, filter, transition } = this.props,
           resultRects = this.chartArea.selectAll('.resultRects').data(data),
           resultText = this.chartArea.selectAll('.resultTexts').data(data)
-
 
 
       resultRects.transition('result-rects-in')

@@ -118,9 +118,16 @@ class LifeChart extends Component {
             .attr('opacity', 0)
             .text(format('d')(difference))
               .transition('diff-text-add')
-              .duration(long)
-              .delay(delayLong)
+              .delay(2000)
+              .duration(2000)
               .attr('opacity', 1)
+              .attr('y', 45)
+              .transition('diff-text-out')
+              .duration(2000)
+              .attr('opacity', 0)
+              .attr('y', 25)
+              .remove()
+
 
     this.chartArea.selectAll('.life-rect')
               .transition('life-update')
@@ -140,7 +147,7 @@ class LifeChart extends Component {
                   return function(t) {that.text(format('d')(i(t))) };
                   })
 
-    select('.diff-text').transition('diff-text-remove').duration(long).delay(long + delayLong).attr('opacity', 0).remove()
+    //select('.diff-text').transition('diff-text-remove').duration(2000).delay(2500).attr('opacity', 0).attr('y', 25).remove()
 
   }
 

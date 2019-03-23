@@ -60,7 +60,13 @@ class App extends Component {
   handleDblClick = (d, i, n) => {
     const copy = {...this.state}
 
-          if (!copy.filter.includes(d.country) && copy.life > 0){
+      if(copy.life > 0){
+          if (copy.filter.length === 6){
+            copy.life = copy.life - (d.difference + mean(this.state.countryGuess, d => d.difference))
+            copy.difference = -d.difference - (mean(this.state.countryGuess, d => d.difference))
+            copy.filter.push(d.country)
+            copy.country = d.country
+          } else if (!copy.filter.includes(d.country) && copy.life > 0){
               copy.filter.push(d.country)
               copy.life = copy.life - d.difference
               copy.difference = -d.difference
@@ -68,18 +74,9 @@ class App extends Component {
               copy.sum.push(d.difference)
           }
 
-          if (copy.filter.length === 7){
-            copy.life = copy.life-mean(this.state.countryGuess, d => d.difference)
-            copy.difference = -d.difference
-            copy.country = d.country
-          }
-
-          if(copy.life < 0){
+          if (copy.life < 0){
             copy.life = 0
-            copy.difference = -d.difference
-          }
-
-
+          }}
 
           this.setState(copy)
 
@@ -97,6 +94,7 @@ class App extends Component {
 
           if(copy.life < 0){
             copy.life = 0
+            copy.difference = (-(d.difference * 7 + d.difference)) + sum(copy.sum)
           } else {
               copy.life = (copy.life- (d.difference * 7 + d.difference))
               copy.country = d.country
@@ -135,7 +133,7 @@ class App extends Component {
           <div className="text-section">
             <h1>How do we feel about women leaders?</h1>
             <p>Women Political Leaders (WPL), in cooperation with Kantar, have created The Reykjavik Index for Leadership to support the journey to equality for women and men. It was launched during the Women Leaders Global Forum in Iceland, in November 2018, and this inaugural report focuses on the G7 nations. So - how do people in these countries feel about women as leaders?
-            A score of 100 would indicate that there is complete agreement that men and women are equally suited to leadership across the economy.Test your assumptions or knowledge with the visualization below! </p>
+            A score of 100 would indicate that there is complete agreement that men and women are equally suited to leadership across the economy. Test your assumptions or knowledge with the visualization below! </p>
           </div>
           <div className="image-section">
             <img src={legend} alt="legend"></img>
@@ -178,7 +176,7 @@ class App extends Component {
               <List.Item href='https://twitter.com/AndSzesztai' target='_blank' as='a'>Built and designed by: Andras Szesztai</List.Item>
               <List.Item href='https://public.tableau.com/profile/zunaira.rasheed#!/vizhome/ReykjavikIndex-MakeoverMondayW12/ReykjavikIndex' target='_blank' as='a'>Inspired by: Zunaira Rasheed</List.Item>
               <List.Item href='https://www.makeovermonday.co.uk/' target='_blank' as='a'>#MakeoverMonday Week 12 2019</List.Item>
-              <List.Item href='https://data.world/makeovermonday/2019week12' target='_blank' as='a'>Data: The Reykjavik Index for Leadership, World Economic Forum  </List.Item>
+              <List.Item href='https://data.world/makeovermonday/2019w12' target='_blank' as='a'>Data: The Reykjavik Index for Leadership, World Economic Forum  </List.Item>
           </List>
         </div>
       <div>
